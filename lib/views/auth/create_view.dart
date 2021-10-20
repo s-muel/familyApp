@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:unicons/unicons.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CreateAccountView extends StatefulWidget {
   CreateAccountView({Key? key}) : super(key: key);
@@ -21,13 +22,15 @@ class _CreateAccountViewState extends State<CreateAccountView> {
 
   final TextEditingController _passwordController = TextEditingController();
 
+  final emailRegexpression = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+
   final ImagePicker _imagePicker = ImagePicker();
+
   File? _imageFile;
 
   selectImage({ImageSource imageSource = ImageSource.camera}) async {
     XFile? selectFile = await _imagePicker.pickImage(source: imageSource);
-    _imageFile = File(selectFile!.path);
-    setState(() {});
+    File _imageFile = File(selectFile!.path);
   }
 
   @override
@@ -42,25 +45,41 @@ class _CreateAccountViewState extends State<CreateAccountView> {
               radius: 65,
               backgroundImage: AssetImage('assets/imo.jpg'),
             ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(45),
+              child: _imageFile == null
+                  ? Image.asset(
+                      'assets/imo.jpg',
+                      width: 130,
+                      height: 130,
+                      fit: BoxFit.contain,
+                    )
+                  : Image.file(
+                      _imageFile!,
+                      width: 130,
+                      height: 130,
+                      fit: BoxFit.cover,
+                    ),
+            ),
             TextButton.icon(
                 onPressed: () {
-                  showBottomSheet(
+                  showModalBottomSheet(
                       context: context,
                       builder: (context) {
                         return SizedBox(
                             height: 200,
                             child: Column(
                               children: [
-                                TextButton(
-                                  onPressed: () => selectImage(
-                                      imageSource: ImageSource.camera),
-                                  child: Icon(Icons.camera),
-                                ),
-                                TextButton(
-                                  onPressed: () => selectImage(
-                                      imageSource: ImageSource.gallery),
-                                  child: Icon(Icons.photo),
-                                )
+                                TextButton.icon(
+                                    onPressed: () => selectImage(
+                                        imageSource: ImageSource.camera),
+                                    icon: const Icon(UniconsLine.camera),
+                                    label: const Text('Select From Camara')),
+                                TextButton.icon(
+                                    onPressed: () => selectImage(
+                                        imageSource: ImageSource.gallery),
+                                    icon: const Icon(UniconsLine.picture),
+                                    label: const Text('Select From Galary'))
                               ],
                             ));
                       });
@@ -76,15 +95,26 @@ class _CreateAccountViewState extends State<CreateAccountView> {
               decoration: InputDecoration(
                 labelText: 'Fullname',
               ),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Fullname is required';
+                }
+                ;
+              },
             ),
             SizedBox(height: 15),
             TextFormField(
-              controller: _emailController,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'Email',
-              ),
-            ),
+                controller: _emailController,
+                keyboardType: TextInputType.name,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                ),
+                validator: (value) {
+                  if (!emailRegexpression.hasMatch(value!)) {
+                    return 'Email is invalid';
+                  }
+                  if (value.isEmpty) {}
+                }),
             SizedBox(height: 15),
             TextFormField(
               controller: _passwordController,
@@ -92,10 +122,33 @@ class _CreateAccountViewState extends State<CreateAccountView> {
               decoration: InputDecoration(
                 labelText: 'Password',
               ),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "password is require";
+                }
+                if (value.length < 8) {
+                  return "Password less than 8";
+                }
+              },
             ),
             SizedBox(height: 15),
             TextButton(
-                onPressed: null,
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    String name = _nameController.text;
+                    String email = _emailController.text;
+                    String password = _passwordController.text;
+                  } else {
+                    Fluttertoast.showToast(
+                        msg: "Please Check Input",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  }
+                },
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.blue,
                   textStyle: TextStyle(color: Colors.white),

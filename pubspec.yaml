@@ -23,14 +23,24 @@ environment:
 dependencies:
   cupertino_icons: ^1.0.2
   device_preview: ^0.7.4
+  firebase_auth_web: ^3.1.2
   firebase_core: ^1.7.0
+  firebase_storage_web: ^3.0.3
   flutter:
     sdk: flutter
   image_picker: ^0.8.4+1
+  
 
 dev_dependencies:
+  cloud_firestore: ^2.5.3
+  firebase: ^9.0.2
+  firebase_auth: ^3.1.3
+  firebase_storage: ^10.0.5
   flutter_test:
     sdk: flutter
+  # image_cropper: ^1.4.1
+  fluttertoast: ^8.0.8
+  image_cropper: ^1.4.1
   unicons: ^2.0.2
 
 # For information on the generic Dart part of this file, see the
