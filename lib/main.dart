@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: const Color.fromRGBO(249, 251, 252, 1),
           cardColor: Colors.white,
           appBarTheme: const AppBarTheme(
+            iconTheme: IconThemeData(color: Colors.black),
             elevation: 0,
             backgroundColor: Colors.white,
             titleTextStyle: TextStyle(
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
           cardColor: Colors.grey.shade900,
           iconTheme: const IconThemeData(color: Colors.white),
           appBarTheme: const AppBarTheme(
+            iconTheme: IconThemeData(color: Colors.white),
             elevation: 0,
             backgroundColor: Colors.black,
             titleTextStyle: TextStyle(
@@ -62,10 +64,8 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.light(primary: Colors.black),
               textTheme: ButtonTextTheme.primary)),
       themeMode: ThemeMode.system,
-      //home: CreateAccountView(),
-      home: HomeView(),
-      //home:LoginView(),
-      //home: ForgotPasswordView(),
+      // home: HomeView(),
+      home: LoginView(),
     );
   }
 }

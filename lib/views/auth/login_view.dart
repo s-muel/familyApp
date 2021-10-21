@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:famiily_app/views/auth/create_view.dart';
+import 'package:famiily_app/views/auth/forgot_password.dart';
+import 'package:famiily_app/views/home/home_view.dart';
+import 'package:famiily_app/manager/auth_manager.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-import 'forgot_password.dart';
+//import 'forgot_password.dart';
 
 class LoginView extends StatefulWidget {
   LoginView({Key? key}) : super(key: key);
@@ -10,22 +15,33 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
   final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
+
   final RegExp emailRegexp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+
+  bool isLoading = false;
+
+  final AuthManager _authManager = AuthManager();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
           child: Form(
-              child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        key: _formKey,
         child: ListView(
+          padding: const EdgeInsets.all(16),
           children: [
             const FlutterLogo(
               size: 130,
             ),
-            const SizedBox(height: 15),
+            const SizedBox(
+              height: 35,
+            ),
             TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
@@ -59,17 +75,96 @@ class _LoginViewState extends State<LoginView> {
                 }
               },
             ),
+            const SizedBox(
+              height: 25,
+            ),
             Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                     onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => ForgotPasswordView())),
-                    child: Text("forgot password"))),
-            TextButton(onPressed: () {}, child: Text('Login'))
+                            builder: (context) => const ForgotPasswordView())),
+                    child: const Text(
+                      'Forgot password? Reset here!',
+                      style: TextStyle(color: Colors.grey),
+                    ))),
+            isLoading
+                ? const Center(child: CircularProgressIndicator.adaptive())
+                : TextButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        bool isSuccessful = await _authManager.loginUser(
+                            email: _emailController.text,
+                            password: _passwordController.text);
+                        setState(() {
+                          isLoading = false;
+                        });
+                        if (isSuccessful) {
+//success
+                          Fluttertoast.showToast(
+                              msg: "Welcome back to Famlicious!",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.green,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+
+                          //move to home view
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => HomeView()),
+                              (route) => false);
+                        } else {
+                          //error
+                          Fluttertoast.showToast(
+                              msg: _authManager.message,
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        }
+                      } else {
+                        //error validation
+                        Fluttertoast.showToast(
+                            msg: 'Email and Password are required!',
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
+                    },
+                    style: TextButton.styleFrom(
+                        backgroundColor: Theme.of(context)
+                            .buttonTheme
+                            .colorScheme!
+                            .background),
+                    child: Text('Login',
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: Theme.of(context)
+                                .buttonTheme
+                                .colorScheme!
+                                .primary))),
+            Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                    onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => const CreateAccountView())),
+                    child: const Text(
+                      'No account? Create one here!',
+                      style: TextStyle(color: Colors.grey),
+                    ))),
           ],
         ),
-      ))),
+      )),
     );
   }
 }
