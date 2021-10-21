@@ -48,4 +48,5 @@ class AuthManager with ChangeNotifier {
       setMessage('Please check your internet connection.');
     });
   }
+  
 }

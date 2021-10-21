@@ -1,8 +1,10 @@
 import 'package:famiily_app/views/auth/create_view.dart';
+import 'package:famiily_app/views/auth/login_view.dart';
 import 'package:famiily_app/views/home/home_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:famiily_app/views/auth/forgot_password.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,7 +62,10 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.light(primary: Colors.black),
               textTheme: ButtonTextTheme.primary)),
       themeMode: ThemeMode.system,
-      home: CreateAccountView(),
+      //home: CreateAccountView(),
+      home: HomeView(),
+      //home:LoginView(),
+      //home: ForgotPasswordView(),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:famiily_app/views/chat/chat_view.dart';
 import 'package:famiily_app/views/favourite/favouriteView.dart';
 import 'package:famiily_app/views/profile/profile_view.dart';
 import 'package:famiily_app/views/timeline/timeline_view.dart';
+import 'package:firebase_auth_web/firebase_auth_web.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatefulWidget {
@@ -14,6 +15,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+ // final FirebaseAuth _firebaseAuth = FirebaseAuth.instance();
   int _currentIndex = 0;
   final List<Widget> _views = [
     const TimelineView(),
